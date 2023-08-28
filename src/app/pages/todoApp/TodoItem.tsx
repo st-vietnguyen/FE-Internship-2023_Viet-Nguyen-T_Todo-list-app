@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { todoProps } from '../../shared/services/todo.interface';
+import { todoProps } from '../../models/todo.interface';
 
 interface todoItemProps {
   todo: todoProps;
@@ -18,7 +18,9 @@ const TodoItem = (props: todoItemProps) => {
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleChangeEditInput();
-      updateTodo({ ...todo, name: todoInputRef.current.value });
+      if (todoInputRef.current.value.trim() !== '') {
+        updateTodo({ ...todo, name: todoInputRef.current.value });
+      }
     }
   };
   const toggleCompleted = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,7 +32,7 @@ const TodoItem = (props: todoItemProps) => {
         type='checkbox'
         className='todo-check-input'
         onChange={toggleCompleted}
-        checked={todo.status === true}
+        checked={!!todo.status}
         // defaultChecked={todo.status}
       />
       {isEdit ? (
@@ -40,10 +42,12 @@ const TodoItem = (props: todoItemProps) => {
           className='todo-input'
           defaultValue={todo.name}
           onBlur={handleChangeEditInput}
-          onKeyDown={handleEnterPress}
+          onKeyUp={handleEnterPress}
         />
       ) : (
-        <span onDoubleClick={handleChangeEditInput}>{todo.name}</span>
+        <span className='todo-item-name' onDoubleClick={handleChangeEditInput}>
+          {todo.name}
+        </span>
       )}
       <span className='icon icon-delete' onClick={() => deleteTodo(todo.id)}>
         X
