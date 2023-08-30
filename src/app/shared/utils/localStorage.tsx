@@ -7,6 +7,9 @@ export enum StorageKey {
 export const getDataFromLocalStorage = (key: StorageKey): todoProps[] =>
   JSON.parse(localStorage.getItem(key) || '[]');
 
-export function saveDataToLocalStorage(key: string, value: todoProps[]): void {
+export function saveDataToLocalStorage(
+  key: StorageKey,
+  value: todoProps[]
+): void {
   localStorage.setItem(key, JSON.stringify(value));
 }

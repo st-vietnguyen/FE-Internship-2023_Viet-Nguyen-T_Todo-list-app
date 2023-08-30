@@ -18,7 +18,7 @@ const TodoItem = (props: todoItemProps) => {
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       handleChangeEditInput();
-      if (todoInputRef.current.value.trim() !== '') {
+      if (todoInputRef.current.value.trim()) {
         updateTodo({ ...todo, name: todoInputRef.current.value });
       }
     }
@@ -27,10 +27,10 @@ const TodoItem = (props: todoItemProps) => {
     updateTodo({ ...todo, status: e.target.checked });
   };
   return (
-    <li className='todo-item'>
+    <li className="todo-item">
       <input
-        type='checkbox'
-        className='todo-check-input'
+        type="checkbox"
+        className="todo-check-input"
         onChange={toggleCompleted}
         checked={!!todo.status}
         // defaultChecked={todo.status}
@@ -39,17 +39,17 @@ const TodoItem = (props: todoItemProps) => {
         <input
           autoFocus
           ref={todoInputRef}
-          className='todo-input'
+          className="todo-input"
           defaultValue={todo.name}
           onBlur={handleChangeEditInput}
           onKeyUp={handleEnterPress}
         />
       ) : (
-        <span className='todo-item-name' onDoubleClick={handleChangeEditInput}>
+        <span className="todo-item-name" onDoubleClick={handleChangeEditInput}>
           {todo.name}
         </span>
       )}
-      <span className='icon icon-delete' onClick={() => deleteTodo(todo.id)}>
+      <span className="icon icon-delete" onClick={() => deleteTodo(todo.id)}>
         X
       </span>
     </li>

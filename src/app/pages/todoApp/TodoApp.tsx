@@ -58,8 +58,7 @@ const TodoApp = () => {
   };
 
   useEffect(() => {
-    // setFilterTodos(todos);
-    saveDataToLocalStorage('todoList', todos);
+    saveDataToLocalStorage(StorageKey.TODO_LIST, todos);
   }, [todos]);
 
   const filterTodoList = (tab: Tab): todoProps[] => {
@@ -82,30 +81,30 @@ const TodoApp = () => {
     setTab(newTab);
   };
   return (
-    <div className='todo-app'>
-      <div className='app-header'>
-        <h1 className='app-title'>
+    <div className="todo-app">
+      <div className="app-header">
+        <h1 className="app-title">
           Todos
-          <span role='img' className='icon icon-todo'>
+          <span role="img" className="icon icon-todo">
             📝
           </span>
         </h1>
       </div>
-      <div className='todo-app-body'>
-        <div className='app-content-header'>
-          <i className='icon icon-checklist'></i>
+      <div className="todo-app-body">
+        <div className="app-content-header">
+          <i className="icon icon-checklist"></i>
           <input
             ref={todoInputRef}
-            type='text'
-            className='todo-input'
-            placeholder='What need to be done?'
+            type="text"
+            className="todo-input"
+            placeholder="What need to be done?"
             onKeyUp={handleEnterPress}
           />
-          <span className='btn active' onClick={addTodo}>
+          <span className="btn active" onClick={addTodo}>
             ADD
           </span>
         </div>
-        <ul className='todo-list'>
+        <ul className="todo-list">
           {todos &&
             filterTodoList(tab).map((todo) => {
               return (
@@ -118,12 +117,12 @@ const TodoApp = () => {
               );
             })}
         </ul>
-        <div className='todo-app-footer'>
-          <p className=''>{countTodoActive()} item(s) left</p>
-          <ul className='status-list'>
+        <div className="todo-app-footer">
+          <p className="">{countTodoActive()} item(s) left</p>
+          <ul className="status-list">
             {tabs.map((item) => {
               return (
-                <li className='status-item' key={item}>
+                <li className="status-item" key={item}>
                   <span
                     className={`btn ${item === tab ? Tab.ACTIVE : null}`}
                     onClick={() => changeTab(item)}>
@@ -133,7 +132,7 @@ const TodoApp = () => {
               );
             })}
           </ul>
-          <span className='btn btn-outline-hover' onClick={clearCompletedTodo}>
+          <span className="btn btn-outline-hover" onClick={clearCompletedTodo}>
             Clear Completed
           </span>
         </div>
