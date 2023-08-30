@@ -9,3 +9,8 @@ export enum Tab {
   ACTIVE = 'Active',
   COMPLETED = 'Completed',
 }
+
+export interface ActionType {
+  type: string;
+  payload: any;
+}

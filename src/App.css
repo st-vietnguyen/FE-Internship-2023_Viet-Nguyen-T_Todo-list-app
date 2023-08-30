@@ -82,6 +82,7 @@ ul {
   border-radius: 50%;
   background-color: red;
   color: #fff;
+  font-weight: 700;
 }
 
 .todo-app-footer {

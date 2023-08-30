@@ -1,15 +1,22 @@
 import { useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { todoProps } from '../../models/todo.interface';
+import { deleteTodo, updateTodo } from '../../../redux/action';
 
 interface todoItemProps {
   todo: todoProps;
-  deleteTodo: (id: string) => void;
-  updateTodo: (todo: todoProps) => void;
 }
-const TodoItem = (props: todoItemProps) => {
-  const { todo, deleteTodo, updateTodo } = props;
+const TodoItem = ({ todo }: todoItemProps) => {
   const [isEdit, setIsEdit] = useState(false);
   const todoInputRef = useRef<any>(null);
+  const dispatch = useDispatch();
+
+  const handleDeleteTodo = (id: string) => {
+    dispatch(deleteTodo(id));
+  };
+  const handleUpdateTodo = (todo: todoProps) => {
+    dispatch(updateTodo(todo));
+  };
 
   const handleChangeEditInput = () => {
     setIsEdit(!isEdit);
@@ -19,12 +26,12 @@ const TodoItem = (props: todoItemProps) => {
     if (e.key === 'Enter') {
       handleChangeEditInput();
       if (todoInputRef.current.value.trim()) {
-        updateTodo({ ...todo, name: todoInputRef.current.value });
+        handleUpdateTodo({ ...todo, name: todoInputRef.current.value });
       }
     }
   };
   const toggleCompleted = (e: React.ChangeEvent<HTMLInputElement>) => {
-    updateTodo({ ...todo, status: e.target.checked });
+    handleUpdateTodo({ ...todo, status: e.target.checked });
   };
   return (
     <li className="todo-item">
@@ -33,7 +40,6 @@ const TodoItem = (props: todoItemProps) => {
         className="todo-check-input"
         onChange={toggleCompleted}
         checked={!!todo.status}
-        // defaultChecked={todo.status}
       />
       {isEdit ? (
         <input
@@ -49,7 +55,9 @@ const TodoItem = (props: todoItemProps) => {
           {todo.name}
         </span>
       )}
-      <span className="icon icon-delete" onClick={() => deleteTodo(todo.id)}>
+      <span
+        className="icon icon-delete"
+        onClick={() => handleDeleteTodo(todo.id)}>
         X
       </span>
     </li>

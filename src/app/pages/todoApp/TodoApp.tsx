@@ -1,85 +1,74 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import TodoItem from './TodoItem';
 import { Tab, todoProps } from '../../models/todo.interface';
 import {
-  getDataFromLocalStorage,
   StorageKey,
   saveDataToLocalStorage,
 } from '../../shared/utils/localStorage';
+import { useDispatch, useSelector } from 'react-redux';
+import { addTodo, changeTab, clearCompleted } from '../../../redux/action';
+import { todoAppState } from '../../../redux/reducer';
 
 const TodoApp = () => {
-  const [todos, setTodos] = useState<todoProps[]>(
-    getDataFromLocalStorage(StorageKey.TODO_LIST)
-  );
-  // const [filterTodos, setFilterTodos] = useState<todoProps[]>([]);
+  let dispatch = useDispatch();
+  const todos = useSelector((state: todoAppState) => state.todos);
+  const tab = useSelector((state: todoAppState) => state.tab);
+
   const todoInputRef = useRef<any>(null);
-  const [tab, setTab] = useState<Tab>(Tab.ALL);
 
   const tabs = [Tab.ALL, Tab.ACTIVE, Tab.COMPLETED];
 
-  const deleteTodo = (id: string) => {
-    setTodos(
-      todos.filter((todo) => {
-        return todo.id !== id;
-      })
-    );
-  };
-  const updateTodo = (todo: todoProps) => {
-    let newTodos = todos.map((item) => {
-      return item.id === todo.id ? todo : item;
-    });
-    setTodos(newTodos);
-  };
+  const handleAddTodo = () => {
+    if (todoInputRef.current.value.trim()) {
+      const newTodo = {
+        id: uuidv4(),
+        name: todoInputRef.current.value.trim(),
+        status: false,
+      };
 
-  const addTodo = () => {
-    setTodos([
-      ...todos,
-      { id: uuidv4(), name: todoInputRef.current.value, status: false },
-    ]);
+      dispatch(addTodo(newTodo));
+    }
+
     todoInputRef.current.value = '';
     todoInputRef.current.focus();
   };
 
   const handleEnterPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && todoInputRef.current.value.trim() !== '') {
-      addTodo();
+    if (e.key === 'Enter') {
+      handleAddTodo();
     }
   };
   const countTodoActive = () => {
-    return todos.filter((item) => item.status === false).length;
+    return todos?.filter((item) => item.status === false).length;
   };
-  const clearCompletedTodo = () => {
-    setTodos(
-      todos.filter((todo) => {
-        return todo.status !== true;
-      })
-    );
+  const handleClearCompletedTodo = () => {
+    dispatch(clearCompleted());
   };
 
+  const handleChangeTab = (newTab: Tab) => {
+    dispatch(changeTab(newTab));
+  };
   useEffect(() => {
-    saveDataToLocalStorage(StorageKey.TODO_LIST, todos);
+    saveDataToLocalStorage(StorageKey.TODO_LIST, todos || []);
   }, [todos]);
 
   const filterTodoList = (tab: Tab): todoProps[] => {
     const objectFilterTodo = {
       [Tab.ALL]: () => todos,
       [Tab.ACTIVE]: () =>
-        todos.filter((item) => {
+        todos?.filter((item) => {
           return item.status === false;
         }),
       [Tab.COMPLETED]: () =>
-        todos.filter((item) => {
+        todos?.filter((item) => {
           return item.status === true;
         }),
     };
 
-    return objectFilterTodo[tab]();
+    return objectFilterTodo[tab]() || [];
   };
 
-  const changeTab = (newTab: Tab) => {
-    setTab(newTab);
-  };
   return (
     <div className="todo-app">
       <div className="app-header">
@@ -100,21 +89,14 @@ const TodoApp = () => {
             placeholder="What need to be done?"
             onKeyUp={handleEnterPress}
           />
-          <span className="btn active" onClick={addTodo}>
+          <span className="btn active" onClick={() => handleAddTodo()}>
             ADD
           </span>
         </div>
         <ul className="todo-list">
           {todos &&
-            filterTodoList(tab).map((todo) => {
-              return (
-                <TodoItem
-                  deleteTodo={deleteTodo}
-                  todo={todo}
-                  key={todo.id}
-                  updateTodo={updateTodo}
-                />
-              );
+            filterTodoList(tab!).map((todo) => {
+              return <TodoItem todo={todo} key={todo.id} />;
             })}
         </ul>
         <div className="todo-app-footer">
@@ -124,15 +106,17 @@ const TodoApp = () => {
               return (
                 <li className="status-item" key={item}>
                   <span
-                    className={`btn ${item === tab ? Tab.ACTIVE : null}`}
-                    onClick={() => changeTab(item)}>
+                    className={`btn ${item === tab ? 'active' : ''}`}
+                    onClick={() => handleChangeTab(item!)}>
                     {item}
                   </span>
                 </li>
               );
             })}
           </ul>
-          <span className="btn btn-outline-hover" onClick={clearCompletedTodo}>
+          <span
+            className="btn btn-outline-hover"
+            onClick={handleClearCompletedTodo}>
             Clear Completed
           </span>
         </div>
