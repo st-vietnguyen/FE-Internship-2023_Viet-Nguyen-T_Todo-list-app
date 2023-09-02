@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { todoProps } from '../../models/todo.interface';
-import { deleteTodo, updateTodo } from '../../../redux/action';
+import { todoProps } from '../../../models/todo.interface';
+import { deleteTodo, updateTodo } from '../../../../redux/action';
 
 interface todoItemProps {
   todo: todoProps;
@@ -18,6 +18,12 @@ const TodoItem = ({ todo }: todoItemProps) => {
     dispatch(updateTodo(todo));
   };
 
+  const handleBlurInput = () => {
+    if (todoInputRef.current.value.trim()) {
+      handleUpdateTodo({ ...todo, name: todoInputRef.current.value.trim() });
+    }
+    setIsEdit(!isEdit);
+  };
   const handleChangeEditInput = () => {
     setIsEdit(!isEdit);
   };
@@ -26,7 +32,7 @@ const TodoItem = ({ todo }: todoItemProps) => {
     if (e.key === 'Enter') {
       handleChangeEditInput();
       if (todoInputRef.current.value.trim()) {
-        handleUpdateTodo({ ...todo, name: todoInputRef.current.value });
+        handleUpdateTodo({ ...todo, name: todoInputRef.current.value.trim() });
       }
     }
   };
@@ -47,7 +53,7 @@ const TodoItem = ({ todo }: todoItemProps) => {
           ref={todoInputRef}
           className="todo-input"
           defaultValue={todo.name}
-          onBlur={handleChangeEditInput}
+          onBlur={handleBlurInput}
           onKeyUp={handleEnterPress}
         />
       ) : (

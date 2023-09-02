@@ -3,6 +3,7 @@ import {
   ADD_TODO,
   CHANE_TAB,
   CLEAR_COMPLETED,
+  COMPLTED_ALL,
   DELETE_TODO,
   UPDATE_TODO,
 } from './type';
@@ -40,6 +41,12 @@ export const clearCompleted = () => {
   };
 };
 
+export const completedAll = () => {
+  return {
+    type: COMPLTED_ALL,
+  };
+};
+
 export const changeTab = (newTab: Tab) => {
   return {
     type: CHANE_TAB,
@@ -48,4 +55,3 @@ export const changeTab = (newTab: Tab) => {
     },
   };
 };
-
