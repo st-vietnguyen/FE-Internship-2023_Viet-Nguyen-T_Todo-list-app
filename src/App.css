@@ -82,6 +82,7 @@ ul {
   border-radius: 50%;
   background-color: red;
   color: #fff;
+  font-weight: 700;
 }
 
 .todo-app-footer {
@@ -127,4 +128,11 @@ ul {
 
 input:focus::placeholder {
   color: transparent;
+}
+
+.checkList-img {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  margin-right: 10px;
 }
